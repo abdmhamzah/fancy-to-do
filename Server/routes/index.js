@@ -1,5 +1,6 @@
 const router = require('express').Router()
+const routerTodos = require('./routerTodo')
 
-router.get('/', (req, res) => { console.log('ini di home') })
+router.use('/todos', routerTodos)
 
 module.exports = router
