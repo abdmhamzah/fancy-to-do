@@ -52,8 +52,9 @@ class ControllerTodo {
                 }
             })
             .catch(err => {
-                console.log(err, 'error create todo baru');
-                res.status(500).json(err) // SERVER ERROR
+                res.status(500).json({ // SERVER ERROR
+                    messege: 'Server failed to response'
+                }) 
             })
     }
     
@@ -71,12 +72,16 @@ class ControllerTodo {
             }),
             Todo.findByPk(id)
         ])
-            .then(updated => {
+        .then(updated => {
                 if (updated[1]) {
                     res.status(200).json( updated[1] )
-                } else {
+                } else if (updated[0] == 0){
                     res.status(404).json({
-                        messege: `Todos with ID ${id}, not found` 
+                        messege: `Todos with ID ${id} not found`
+                    })
+                } else {
+                    res.status(400).json({ // BAD REQUEST, CLIENT ERROT
+                        messege: 'Invalid Input, Please try again' 
                     })
                 }
             })
