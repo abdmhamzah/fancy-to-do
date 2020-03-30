@@ -60,16 +60,39 @@ class ControllerTodo {
     static updateTodo(req, res){
         const { title, description, status, due_date } = req.body
         const id = req.params.id
+        Promise.all([
+            Todo.update({
+                title: title,
+                description: description,
+                status: status,
+                due_date: due_date
+            }, {
+                where: { id: id }
+            }),
+            Todo.findByPk(id)
+        ])
+            .then(updated => {
+                if (updated[1]) {
+                    res.status(200).json( updated[1] )
+                } else {
+                    res.status(404).json({
+                        messege: `Todos with ID ${id}, not found` 
+                    })
+                }
+            })
+            .catch(err => {
+                res.status(500).json({ // SERVER ERROR
+                    messege: 'Server failed to response'
+                }) 
+            })
     }
 
     static deleteTodo(req, res){
         const id = req.params.id
-        Todo.destroy({ where: { id: id } })
+        Promise.all([Todo.findByPk(id), Todo.destroy({ where: { id: id } })])
             .then(deleted => {
-                if (deleted) {
-                    res.status(200).json({
-                        messege: `Todos with ID ${id} successfully deleted`
-                    })
+                if (deleted[0]) {
+                    res.status(200).json( deleted[0] )
                 } else {
                     res.status(404).json({
                         messege: `Todos with ID ${id} cannot deleted, ID not found`
