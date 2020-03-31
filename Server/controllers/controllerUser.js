@@ -1,9 +1,10 @@
 const { User } = require('../models')
 const jwt = require('jsonwebtoken')
+const { checkPassword } = require('../helpers/bcrypt')
 
 class UserController {
 
-    static createUser(req, res){
+    static signup(req, res){
         const { email, username, password } = req.body
         User.create({
             email: email,
@@ -11,10 +12,12 @@ class UserController {
             password: password
         })
             .then(user => { 
-                console.log(user);
-                
+                const token = jwt.sign({
+                    userId : user.id,
+                    username : user.username
+                }, 'banana')
                 if (user) {
-                    res.status(201).json({ user }) // DATA CREATED
+                    res.status(201).json({ token }) // DATA CREATED
                 } else {
                     res.status(400).json({ // BAD REQUEST, CLIENT ERROT
                         messege: 'Invalid Input, Please try again' 
@@ -28,6 +31,38 @@ class UserController {
             })
     }
 
+    static signin(req, res){
+        const { username, password } = req.body
+        User.findOne({
+            where: {
+                username: username 
+            }
+        })
+            .then(user => {
+                const messege = {
+                    messege: 'Username / Password Incorrect'
+                }
+                if (!user) {
+                    res.status(400).json(messege) // BAD REQUEST 
+                } else {
+                    const isValid = checkPassword(password, user.password)
+                    if (!isValid) {
+                        res.status(400).json(messege) // BAD REQUEST 
+                    } else {
+                        const token = jwt.sign({
+                            UserId: user.id,
+                            username: user.username
+                        }, 'banana')
+                        res.status(200).json({ token })
+                    }
+                }
+            })
+            .catch(err => {
+                res.status(500).json({ // SERVER ERROR
+                    messege: 'Server failed to response'
+                }) 
+            })
+    }
 
 }
 

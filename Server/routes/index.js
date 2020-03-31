@@ -1,9 +1,8 @@
 const router = require('express').Router()
 const routerTodos = require('./routerTodo')
-const controllerUser = require('../controllers/controllerUser')
+const routerUser = require('./routerUser')
 
-router.post('/signup', controllerUser.createUser) // SIGN UP UNTUK USER BARU
-router.post('/signin') // SIGN IN UNTUK MASUK
+router.use('/user', routerUser)
 router.use('/todos', routerTodos)
 
 module.exports = router
