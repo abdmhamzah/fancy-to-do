@@ -12,6 +12,8 @@ class ControllerTodo {
                 res.status(200).json({ todos }) // OK
             })
             .catch(err => {
+                console.log(err);
+                
                 res.status(500).json({ // SERVER ERROR
                     messege: 'Server failed to response'
                 }) 
@@ -23,8 +25,7 @@ class ControllerTodo {
         Todo.findOne({ 
             include: User,
             where: { 
-                id: id,
-                UserId: req.UserId
+                id: id
             } 
         })
             .then(todo => {
@@ -81,8 +82,7 @@ class ControllerTodo {
             }, {
                 include: User,
                 where: { 
-                    id: id,
-                    UserId: req.UserId
+                    id: id
                 }
             }),
             Todo.findByPk(id)
@@ -114,8 +114,7 @@ class ControllerTodo {
             Todo.destroy({ 
                 include: User,
                 where: { 
-                    id: id,
-                    UserId: req.UserId
+                    id: id
                 } 
             })
         ])
