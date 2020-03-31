@@ -1,11 +1,14 @@
-const { Todo } = require('../models')
+const { Todo, User } = require('../models')
 
 class ControllerTodo {
 
     static getTodos(req, res){
-        Todo.findAll()
+        Todo.findAll({
+            include: User,
+            where: { UserId: req.UserId }
+        })
             .then(todos => {
-                console.log(todos, 'ini todos');
+                // console.log(todos, 'ini todos');
                 res.status(200).json({ todos }) // OK
             })
             .catch(err => {
@@ -17,7 +20,13 @@ class ControllerTodo {
 
     static getTodo(req, res){
         const id = req.params.id
-        Todo.findOne({ where: { id: id } })
+        Todo.findOne({ 
+            include: User,
+            where: { 
+                id: id,
+                UserId: req.UserId
+            } 
+        })
             .then(todo => {
                 if (todo) {
                     res.status(200).json({ todo })
@@ -40,7 +49,8 @@ class ControllerTodo {
             title: title,
             description: description,
             status: status,
-            due_date: due_date
+            due_date: due_date,
+            UserId: req.UserId
         })
             .then(todo => { 
                 if (todo) {
@@ -66,9 +76,14 @@ class ControllerTodo {
                 title: title,
                 description: description,
                 status: status,
-                due_date: due_date
+                due_date: due_date,
+                UserId: req.UserId
             }, {
-                where: { id: id }
+                include: User,
+                where: { 
+                    id: id,
+                    UserId: req.UserId
+                }
             }),
             Todo.findByPk(id)
         ])
@@ -94,7 +109,16 @@ class ControllerTodo {
 
     static deleteTodo(req, res){
         const id = req.params.id
-        Promise.all([Todo.findByPk(id), Todo.destroy({ where: { id: id } })])
+        Promise.all([
+            Todo.findByPk(id),
+            Todo.destroy({ 
+                include: User,
+                where: { 
+                    id: id,
+                    UserId: req.UserId
+                } 
+            })
+        ])
             .then(deleted => {
                 if (deleted[0]) {
                     res.status(200).json( deleted[0] )
