@@ -3,62 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- GOOGLE SIGN IN -->
+    <meta name="google-signin-client_id" content="97676025414-lmo2bvmcg94nlqqmrd3j5f8j66f3sdcg.apps.googleusercontent.com">
+
+    <!-- BOOSTRAP -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    
+    <!-- AJAX -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <title>Orion Todos</title>
 </head>
 <body>
-    
+
+    <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="/">Orion Todos</a>
+        <a class="navbar-brand" href="">Orion Todos</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
+            <li class="nav-item" id="register">
+                <a class="nav-link" href="">Sign Up</a>
+            </li>
+            <li class="nav-item" id="login">
+                <a class="nav-link" href="">Sign In</a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="">Todos</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="">Holiday</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="">Login</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="">Logout</a>
-            </li>
         </ul>
         </div>
     </nav>
 
-    <div class="mx-auto">
-        <form id="formLogin" class="container col-md-4" action="/login" method="POST">
-            <div class="form-group row">
-              <label for="inputEmail3" class="col-sm-2 col-form-label">Username</label>
-              <div class="col-sm-10">
-                <input type="username" name="username"  class="form-control" id="inputEmail3" placeholder="Username" required>
+    <!-- SIGN UP -->
+    <br>
+    <br>
+    <div class="mx-auto" id="field-signup" style="display: none">
+        <div class="d-flex justify-content-around">
+            <h2>Sign Up</h2>
+        </div>
+        <form class="container col-md-4" id="signup" method="POST">
+            <div class="form-group">
+                <label for="email-signup">Email</label>
+                <input type="text" class="form-control" id="email-signup" placeholder="Email">
               </div>
+            <div class="form-group">
+              <label for="username-signup">Username</label>
+              <input type="text" class="form-control" id="username-signup" placeholder="Username">
             </div>
-            <div class="form-group row">
-              <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
-              <div class="col-sm-10">
-                <input type="password" name="password" class="form-control" id="inputPassword3" placeholder="Password" required>
-              </div>
+            <div class="form-group">
+              <label for="password-signup">Password</label>
+              <input type="password" class="form-control" id="password-signup" placeholder="Password">
             </div>
-            <div class="form-group row">
-              <div class="col-sm-10">
-                <button type="submit" class="btn btn-primary">Sign in</button>
-              </div>
+            <div class="d-flex justify-content-around">
+                <button class="btn btn-primary" type="submit">Sign Up</button>
+            </div>
+            <br>
+        </form>
+    </div>
+
+    <!-- SIGN IN -->
+    <br>
+    <br>
+    <div class="mx-auto" id="field-signin" style="display: none">
+        <div class="d-flex justify-content-around">
+            <h2>Sign In</h2>
+        </div>
+        <form class="container col-md-4" id="signin" method="POST">
+            <div class="form-group">
+              <label for="username-signin">Username</label>
+              <input type="text" class="form-control" id="username-signin" placeholder="Username">
+            </div>
+            <div class="form-group">
+              <label for="password-signin">Password</label>
+              <input type="password" class="form-control" id="password-signin" placeholder="Password">
+            </div>
+            <div class="d-flex justify-content-around">
+                <button class="btn btn-primary" type="submit">Sign In</button>
+            </div>
+            <br>
+            <div class="d-flex justify-content-around">
+                <!-- <div class="g-signin2" data-onsuccess="onSignIn"></div> -->
             </div>
         </form>
     </div>
 
+    <!-- TODOS -->
+    <br>
+    <br>
+    <div class="container col-md-8" id="field-todos" style="display: none">
+        <div class="d-flex justify-content-around">
+            <h2>List Todos</h2>
+        </div>
+        <table class="table">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">Title</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Due Date</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="todos">
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-    <script src="main.js"></script>
+    <!-- ADD TODOS -->
+    <br>
+    <br>
+    <div class="container col-md-8" id="field-addTodos" style="display: none">
+        <div class="d-flex justify-content-around">
+            <h2>Add Todo</h2>
+        </div>
+        <form id="add-todos" method="POST">
+            <div class="form-group">
+                <label for="add-title">Title</label>
+                <input type="text" class="form-control" id="add-title" placeholder="Title" name="title">
+            </div>
+            <div class="form-group">
+                <label for="add-description">Description</label>
+                <textarea class="form-control" id="add-description" rows="4" placeholder="Description" name="descriptio "></textarea>
+            </div>
+            <div class="form-group">
+                <label for="add-status">Status</label>
+                <select class="form-control" id="add-status" name="status">
+                    <option selected>Chose...</option>
+                    <option value="true">Done</option>
+                    <option value="false">Undone</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="formGroupExampleInput2">Due Date</label>
+                <input type="date" class="form-control" id="formGroupExampleInput2" placeholder="Due Date" name="due_date">
+            </div>
+            <div class="d-flex justify-content-around">
+                <button class="btn btn-primary" type="submit">Add</button>
+            </div>
+          </form>
+    </div>
+    
+    
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    
+    <!-- GOOGLE SIGN IN -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    
+    <!-- MAIN SCRIPT -->
+    <script src="main.js"></script>
 </body>
 </html>
