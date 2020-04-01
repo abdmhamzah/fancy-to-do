@@ -1,3 +1,4 @@
+require('dotenv').config()
 const jwt = require('jsonwebtoken')
 
 const authentication = (req, res, next) => {
@@ -8,8 +9,8 @@ const authentication = (req, res, next) => {
                 messege: 'Token not found'
             })
         } else {
-            const decoded = jwt.verify(token, 'banana')
-            console.log(decoded);
+            const decoded = jwt.verify(token, process.env.JWT_SECRET)
+            // console.log(decoded);
             req.UserId = decoded.UserId
             next()
         }

@@ -1,3 +1,4 @@
+require('dotenv').config
 const { User } = require('../models')
 const jwt = require('jsonwebtoken')
 const { checkPassword } = require('../helpers/bcrypt')
@@ -15,7 +16,7 @@ class UserController {
                 const token = jwt.sign({
                     userId : user.id,
                     username : user.username
-                }, 'banana')
+                }, process.env.JWT_SECRET)
                 if (user) {
                     res.status(201).json({ token }) // DATA CREATED
                 } else {
