@@ -1,41 +1,43 @@
 $(document).ready(function(){
 
-    // let signupHidden = false
-    // $("#register").click(function(e){
-    //     e.preventDefault()
-    //     if (signupHidden) {
-    //         $('#field-signup').show();
-    //         signupHidden = false
-    //     } else {
-    //         $('#field-signup').hide();
-    //         signupHidden = true
-    //     }
-    // });
+    $('#nav-signup').click(function(e){
+        e.preventDefault()
+        $('#field-signup').toggle()
+        $('#field-signin').hide()
+        $('#field-todos').hide()
+        $('#field-addTodo').hide()
+    })
 
-    // let signinHidden = false
-    // $("#login").click(function(e){
-    //     e.preventDefault()
-    //     if (signinHidden) {
-    //         $('#field-signin').show();
-    //         signinHidden = false
-    //     } else {
-    //         $('#field-signin').hide();
-    //         signinHidden = true
-    //     }
-    // });
+    $('#nav-signin').click(function(e){
+        e.preventDefault()
+        $('#field-signin').toggle()
+        $('#field-signup').hide()
+        $('#field-todos').hide()
+        $('#field-addTodo').hide()
+    })
 
-    
+    $('#nav-todos').click(function(e){
+        e.preventDefault()
+        $('#field-todos').toggle()
+        $('#field-signup').hide()
+        $('#field-signin').hide()
+        $('#field-addTodo').hide()
+    })
+
+    $('#todos-add-todo').click(function(e){
+        e.preventDefault()
+        $('#field-addTodo').toggle()
+        $('#field-todos').hide()
+        $('#field-signup').hide()
+        $('#field-signin').hide()
+    })
+
+    // SIGNUP
+
+    // SIGNIN
 
     // GET TODOS
-    $.ajax({
-        url: "http://localhost:3000/todos",
-        method: "GET",
-    })
-        .done(function(todos){
-            console.log(todos);
-            
-        })
-        .fail(function(err){
 
-        })
+    // ADD TODO
+    
 });
