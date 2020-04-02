@@ -50,15 +50,15 @@
         <form class="container col-md-4" id="signup" method="POST">
             <div class="form-group">
                 <label for="email-signup">Email</label>
-                <input type="text" class="form-control" id="email-signup" placeholder="Email">
+                <input type="text" class="form-control" id="signup_email" placeholder="Email">
               </div>
             <div class="form-group">
               <label for="username-signup">Username</label>
-              <input type="text" class="form-control" id="username-signup" placeholder="Username">
+              <input type="text" class="form-control" id="signup_username" placeholder="Username">
             </div>
             <div class="form-group">
               <label for="password-signup">Password</label>
-              <input type="password" class="form-control" id="password-signup" placeholder="Password">
+              <input type="password" class="form-control" id="signup_password" placeholder="Password">
             </div>
             <div class="d-flex justify-content-around">
                 <button class="btn btn-primary" type="submit">Sign Up</button>
@@ -77,11 +77,11 @@
         <form class="container col-md-4" id="signin" method="POST">
             <div class="form-group">
               <label for="username-signin">Username</label>
-              <input type="text" class="form-control" id="username-signin" placeholder="Username">
+              <input type="text" class="form-control" id="signin_username" placeholder="Username">
             </div>
             <div class="form-group">
               <label for="password-signin">Password</label>
-              <input type="password" class="form-control" id="password-signin" placeholder="Password">
+              <input type="password" class="form-control" id="signin_password" placeholder="Password">
             </div>
             <div class="d-flex justify-content-around">
                 <button class="btn btn-primary" type="submit">Sign In</button>
@@ -141,9 +141,8 @@
             <div class="form-group">
                 <label for="add-status">Status</label>
                 <select class="form-control" id="add-status" name="status">
-                    <option selected>Chose...</option>
+                    <option value="false" selected>Undone</option>
                     <option value="true">Done</option>
-                    <option value="false">Undone</option>
                 </select>
             </div>
             <div class="form-group">
