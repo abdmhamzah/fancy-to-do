@@ -23,20 +23,13 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-            <li class="nav-item" id="nav-signup">
-                <a class="nav-link" href="">Sign Up</a>
-            </li>
-            <li class="nav-item" id="nav-signin">
-                <a class="nav-link" href="">Sign In</a>
-            </li>
-            <li class="nav-item" id="nav-todos">
-                <a class="nav-link" href="">Todos</a>
-            </li>
-            <!-- <li class="nav-item" id="nav-holiday">
-                <a class="nav-link" href="">Holiday</a>
-            </li> -->
-        </ul>
+            <div class="navbar-nav">
+                <a class="nav-link" id="nav-signup" href="" >Sign Up</a>
+                <a class="nav-link"  id="nav-signin" href="">Sign In</a>
+                <a class="nav-link" id="nav-todos" href="">Todos</a>
+                <a class="nav-link" id="nav-holiday" href="">Holiday</a>
+                <a class="nav-link" id="nav-signout" href="">Sign Out</a>
+            </div>
         </div>
     </nav>
 
@@ -50,7 +43,7 @@
         <form class="container col-md-4" id="signup" method="POST">
             <div class="form-group">
                 <label for="email-signup">Email</label>
-                <input type="text" class="form-control" id="signup_email" placeholder="Email">
+                <input type="email" class="form-control" id="signup_email" placeholder="Email">
               </div>
             <div class="form-group">
               <label for="username-signup">Username</label>
@@ -115,11 +108,32 @@
                     <th scope="col">Action</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr id="todos">
-                </tr>
+
+            <tbody id="todos">
             </tbody>
+
         </table>
+    </div>
+
+    <!-- HOLIDAY -->
+    <div class="container" id="field-holiday">
+        <div class="row mt-3 justify-content-center">
+            <div class="col-md-8">
+                <h1 class="text-center">Holidays</h1>
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Holiday</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="holiday">
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
     </div>
 
     <!-- ADD TODO -->
