@@ -1,6 +1,8 @@
 require('dotenv').config
+const { OAuth2Client } = require('google-auth-library');
 const { User } = require('../models')
 const jwt = require('jsonwebtoken')
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const { checkPassword } = require('../helpers/bcrypt')
 
 class UserController {
@@ -53,7 +55,7 @@ class UserController {
                         const token = jwt.sign({
                             UserId: user.id,
                             username: user.username
-                        }, 'banana')
+                        }, process.env.JWT_SECRET)
                         res.status(200).json({ token })
                     }
                 }
@@ -62,6 +64,47 @@ class UserController {
                 res.status(500).json({ // SERVER ERROR
                     messege: 'Server failed to response'
                 }) 
+            })
+    }
+
+    static googleSignIn(req, res){
+        const token = req.body.token
+        const user = {}
+        client.verifyIdToken({
+            idToken: token,
+            audience: process.env.GOOGLE_CLIENT_ID
+        })
+            .then(data => {
+                const payload = data.getPayload()
+                // console.log(payload);
+                user.username = payload.name
+                user.email = payload.email
+                user.password = 'qwerty' // INI DEFAULT
+                return User.findOne({
+                    where: {
+                        email: payload.email
+                    }
+                })
+            })
+            .then(userData => {
+                if (userData) {
+                    return userData
+                } else {
+                    return User.create(user)
+                }
+            })
+            .then(userLogin => {
+                let userObj = {
+                    id: userLogin.id,
+                    username: userLogin.username,
+                    email: userLogin.email
+                }
+                res.status(200).json({
+                    token: jwt.sign(userObj, process.env.JWT_SECRET)
+                })
+            })
+            .catch(err => {
+                console.log(err);
             })
     }
 

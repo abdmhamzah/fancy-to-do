@@ -1,7 +1,8 @@
 const router = require('express').Router()
-const controllerUser = require('../controllers/controllerUser')
+const ControllerUser = require('../controllers/controllerUser')
 
-router.post('/signup', controllerUser.signup) // SIGN UP UNTUK USER BARU
-router.post('/signin', controllerUser.signin) // SIGN IN UNTUK MASUK
+router.post('/signup', ControllerUser.signup) // SIGN UP UNTUK USER BARU
+router.post('/signin', ControllerUser.signin) // SIGN IN UNTUK MASUK
+router.post('/signin-google', ControllerUser.googleSignIn) // OAuth
 
 module.exports = router

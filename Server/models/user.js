@@ -2,7 +2,12 @@
 const { hashPassword } = require('../helpers/bcrypt')
 
 module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define('User', {
+  const Sequelize = sequelize.Sequelize
+  const Model = Sequelize.Model
+
+  class User extends Model {}
+
+  User.init({
     email: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -36,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
       beforeCreate(user, opt){
         user.password = hashPassword(user.password)
       }
-    } 
+    }, sequelize
   });
 
   User.associate = function(models) {
