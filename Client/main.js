@@ -1,11 +1,17 @@
 $(document).ready(function(){
 
+    // SHOW NAVBAR 
     if (!localStorage.getItem('token') || localStorage.getItem('token') == null) {
         $('#nav-signin').show()
         $('#nav-signup').show()
         $('#nav-todos').hide()
         $('#nav-holiday').hide()
         $('#nav-signout').hide()
+        $('#field-signup').hide()
+        $('#field-signin').show()
+        $('#field-todos').hide()
+        $('#field-addTodo').hide()
+        $('#field-editTodo').hide()
         $('#field-holiday').hide()
     } else {
         $('#nav-signin').hide()
@@ -13,46 +19,62 @@ $(document).ready(function(){
         $('#nav-todos').show()
         $('#nav-holiday').show()
         $('#nav-signout').show()
-        $('#field-todos').show()
-        $('#field-holiday').hide()
+        $('#field-signup').hide()
+        $('#field-signin').hide()
         showTodos()
+        $('#field-todos').show()
+        $('#field-addTodo').hide()
+        $('#field-editTodo').hide()
+        $('#field-holiday').hide()
     }
 
-    // TOGGLE SIGNUP
+    // SHOW SIGNUP
     $('#nav-signup').click(function(e){
         e.preventDefault()
-        $('#field-signup').toggle()
+        $('#success').empty()
+        $('#error').empty()
+        $('#field-signup').show()
         $('#field-signin').hide()
         $('#field-todos').hide()
         $('#field-addTodo').hide()
+        $('#field-editTodo').hide()
         $('#field-holiday').hide()
     })
 
-    // TOGGLE SIGNIN
+    // SHOW SIGNIN
     $('#nav-signin').click(function(e){
         e.preventDefault()
-        $('#field-signin').toggle()
+        $('#success').empty()
+        $('#error').empty()
+        $('#field-signin').show()
         $('#field-signup').hide()
         $('#field-todos').hide()
         $('#field-addTodo').hide()
+        $('#field-editTodo').hide()
         $('#field-holiday').hide()
     })
 
-    // TOGGLE TODOS
+    // SHOW TODOS
     $('#nav-todos').click(function(e){
         e.preventDefault()
+        $('#success').empty()
+        $('#error').empty()
         $('#field-signup').hide()
         $('#field-signin').hide()
         $('#field-addTodo').hide()
+        $('#field-editTodo').hide()
         $('#field-holiday').hide()
         showTodos()
         $('#field-todos').show()
     })
 
-    // TOGGLE HOLIDAY
+    // SHOW HOLIDAY
     $('#nav-holiday').click(function(e){
         e.preventDefault()
+        $('#success').empty()
+        $('#error').empty()
         $('#field-addTodo').hide()
+        $('#field-editTodo').hide()
         $('#field-todos').hide()
         $('#field-signup').hide()
         $('#field-signin').hide()
@@ -60,14 +82,44 @@ $(document).ready(function(){
         $('#field-holiday').show()
     })
 
-    // TOGGLE ADD TODO
+    // SHOW ADD TODO
     $('#todos-add-todo').click(function(e){
         e.preventDefault()
-        $('#field-addTodo').toggle()
+        $('#success').empty()
+        $('#error').empty()
+        $('#field-addTodo').show()
+        $('#field-editTodo').hide()
         $('#field-todos').hide()
         $('#field-signup').hide()
         $('#field-signin').hide()
         $('#field-holiday').hide()
+    })
+
+    // SHOW EDIT TODO
+    $('#todos-edit-todo').click(function(e){
+        e.preventDefault()
+        $('#success').empty()
+        $('#error').empty()
+        $('#field-addTodo').hide()
+        $('#field-editTodo').show()
+        $('#field-todos').hide()
+        $('#field-signup').hide()
+        $('#field-signin').hide()
+        $('#field-holiday').hide()
+    })
+
+    // LOGOUT
+    $('#nav-signout').click(function(e){
+        e.preventDefault()
+        $('#success').empty()
+        $('#error').empty()
+        $('#field-addTodo').hide()
+        $('#field-editTodo').hide()
+        $('#field-todos').hide()
+        $('#field-signup').hide()
+        $('#field-signin').hide()
+        $('#field-holiday').hide()
+        signOut()
     })
 });
 
@@ -88,15 +140,20 @@ $('#signup').submit(function(e){
         data: newUser
     })
         .done(signup => {
+            $('#success').empty()
+            $('#error').empty()
             $('#signup_email').val('')
             $('#signup_username').val('')
             $('#signup_password').val('')
 
             $('#field-signup').hide()
             $('#field-signin').show()
+
+            $('#success').append(`<div class="alert alert-success" role="alert"> Selamat! Anda telah terdaftar </div>`)
         })
         .fail(err => {
-            console.log(err);
+            $('#error').empty()
+            $('#error').append(`<div class="alert alert-danger" role="alert"> Data yang anda isi salah </div>`)
         })
 })
 
@@ -118,17 +175,29 @@ $('#signin').submit(function(e){
         .done(signin => {
             $('#signin_username').val('')
             $('#signin_password').val('')
+            $('#success').empty()
+            $('#error').empty()
 
+            $('#nav-signin').hide()
+            $('#nav-signup').hide()
+            $('#nav-todos').show()
+            $('#nav-holiday').show()
+            $('#nav-signout').show()
+            $('#field-signup').hide()
             $('#field-signin').hide()
+            showTodos()
             $('#field-todos').show()
+            $('#field-addTodo').hide()
+            $('#field-editTodo').hide()
+            $('#field-holiday').hide()
 
-            console.log(signin.token);
             localStorage.setItem('token', signin.token)
 
-            showTodos()
+            $('#success').append(`<div class="alert alert-success" role="alert"> Anda berhasil Sign In</div>`)
         })
         .fail(err => {
-            console.log(err);
+            $('#error').empty()
+            $('#error').append(`<div class="alert alert-danger" role="alert"> Username / Password anda salah </div>`)
         })
     
 }) 
@@ -161,6 +230,10 @@ function showTodos(){
                         <td scope="col">${el.description}</td>
                         <td scope="col">${statusTodo}</td>
                         <td scope="col">${el.due_date}</td>
+                        <td scope="col">
+                            <a onclick="updateTodo(${el.id})" "><button class="btn btn-info" type="submit">Edit</button></a>
+                            <a onclick="deleteTodo(${el.id})" "><button class="btn btn-light" type="submit">Delete</button></a>
+                        </td>
                     <tr>
                 `)
             });
@@ -170,25 +243,111 @@ function showTodos(){
         })
 }
 
+
 // ADD TODO
 $('#add-todo').submit(function(e){
     e.preventDefault()
 
-    let token = localStorage.token
+    let token = localStorage.getItem('token')
+    let data = {
+        title: $('#add-title').val(),
+        description: $('#add-description').val(),
+        status: $('#add-status').val(),
+        due_date: $('#add-due_date').val()
+    }
 
     $.ajax({
         url: 'http://localhost:3000/todos',
         method: 'POST',
+        data: data,
+        headers: {
+            token: token
+        },
+    })
+        .done(newTodo => {
+            console.log(newTodo);
+            $('#success').empty()
+            $('#error').empty()
+
+            showTodos()
+            $('#field-addTodo').hide()
+            $('#field-todos').show()
+
+            $('#success').append(`<div class="alert alert-success" role="alert"> Todo ${newTodo.todo.title} berhasil ditambahkan </div>`)
+        })
+        .fail(err => {
+            $('#error').empty()
+            $('#error').append(`<div class="alert alert-danger" role="alert"> Data yang Anda isi Salah </div>`)
+        })
+})
+    
+    
+    // EDIT TODO
+function updateTodo(id){
+    $('#edit-todo').submit(function(e){
+        e.preventDefault()
+    
+        let token = localStorage.token
+        let data = {
+            title: $('#edit-title').val(),
+            description: $('#edit-description').val(),
+            status: $('#edit-status').val(),
+            due_date: $('#edit-due_date').val()
+        }
+    
+        $.ajax({
+            url: `http://localhost:3000/todos/${id}`,
+            method: 'PUT',
+            data: data,
+            headers: {
+                token: token
+            },
+        })
+            .done(editedTodo => {
+                $('#success').empty()
+                $('#error').empty()
+
+                showTodos()
+                $('#field-addTodo').hide()
+                $('#field-todos').show()
+
+                $('#success').append(`<div class="alert alert-success" role="alert"> Todo ${editedTodo.todo.title} berhasil dirubah </div>`)
+            })
+            .fail(err => {
+                $('#error').empty()
+                $('#error').append(`<div class="alert alert-danger" role="alert"> Data yang Anda isi Salah </div>`)
+            })
+    })
+}
+
+
+// DELETE TODO
+function deleteTodo(id){
+
+    let token = localStorage.token
+
+    $.ajax({
+        url: `http://localhost:3000/todos/${id}`,
+        method: 'DELETE',
         headers: {
             token: token
         }
     })
-        
-})
+        .done(deleteTodo => {
+            $('#success').empty()
+            $('#error').empty()
 
-// EDIT TODO
+            showTodos()
+            $('#field-addTodo').hide()
+            $('#field-todos').show()
 
-// DELETE TODO
+            $('#success').append(`<div class="alert alert-success" role="alert"> Todo berhasil dihapus </div>`)
+        })
+        .fail(err => {
+            console.log(err);
+        })
+}
+
 
 // HOLIDAY
 function showHoliday(){
@@ -217,4 +376,65 @@ function showHoliday(){
     .catch(err => {
         console.log(err);
     })
+}
+
+function onSignIn(googleUser) {
+
+    var id_token = googleUser.getAuthResponse().id_token;
+    $.ajax({
+        url: 'http://localhost:3000/user/signin-google',
+        method: 'POST',
+        data: {
+            token: id_token
+        },
+        statusCode: {
+            200: function(response) {
+
+                $('#success').empty()
+                $('#error').empty()
+
+                $('#nav-signin').hide()
+                $('#nav-signup').hide()
+                $('#nav-todos').show()
+                $('#nav-holiday').show()
+                $('#nav-signout').show()
+                $('#field-signup').hide()
+                $('#field-signin').hide()
+                showTodos()
+                $('#field-todos').show()
+                $('#field-addTodo').hide()
+                $('#field-editTodo').hide()
+                $('#field-holiday').hide()
+
+                // console.log('>> response Signin Google', response.token);
+                localStorage.setItem('token', response.token)
+
+                $('#success').append(`<div class="alert alert-success" role="alert"> Anda berhasil Sign In</div>`)
+            }
+        }
+    })
+}
+
+
+function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function() {
+        console.log('User signed out.');
+
+        $('#success').empty()
+
+        localStorage.removeItem('token')
+        $('#nav-signin').show()
+        $('#nav-signup').show()
+        $('#nav-todos').hide()
+        $('#nav-holiday').hide()
+        $('#nav-signout').hide()
+        $('#field-signin').show()
+        $('#field-todos').hide()
+        $('#field-addTodo').hide()
+        $('#field-editTodo').hide()
+        $('#field-holiday').hide()
+
+        $('#success').append(`<div class="alert alert-success" role="alert"> Anda berhasil Sign Out</div>`)
+    });
 }
