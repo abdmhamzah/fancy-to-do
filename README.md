@@ -1,5 +1,7 @@
 # Fancy To-Do
 
+by Hamzah Abdullah Mubarak
+
 An Simple Todo Application with some features:
 - Created Todo
 - Show List of created Todos
@@ -7,6 +9,17 @@ An Simple Todo Application with some features:
 - Update created Todo
 - Delete Todo
 
+
+Technology Used in this Project:
+- Express JS 
+- Google Sign In OAuth
+- Sequelize
+- Jquery
+- Postgres
+- JSON Web Token
+- Bcrypt
+- Ajax
+- Axios
 
 
 # Server

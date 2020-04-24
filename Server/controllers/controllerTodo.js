@@ -1,10 +1,10 @@
-const { Todo, User } = require('../models')
+const { Todo, User, Product } = require('../models')
 
 class ControllerTodo {
 
     static getTodos(req, res){
         Todo.findAll({
-            include: User,
+            include: [ User, Product ],
             where: { UserId: req.UserId }
         })
             .then(todos => {
@@ -50,14 +50,14 @@ class ControllerTodo {
             title: title,
             description: description,
             status: status,
-            due_date: due_date,
+            due_date: new Date(due_date),
             UserId: req.UserId
         })
             .then(todo => { 
                 if (todo) {
                     res.status(201).json({ todo }) // DATA CREATED
                 } else {
-                    res.status(400).json({ // BAD REQUEST, CLIENT ERROT
+                    res.status(400).json({ // BAD REQUEST, CLIENT ERROR
                         messege: 'Invalid Input, Please try again' 
                     })
                 }

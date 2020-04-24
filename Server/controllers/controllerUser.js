@@ -95,9 +95,8 @@ class UserController {
             })
             .then(userLogin => {
                 let userObj = {
-                    id: userLogin.id,
-                    username: userLogin.username,
-                    email: userLogin.email
+                    UserId: userLogin.id,
+                    username: userLogin.username
                 }
                 res.status(200).json({
                     token: jwt.sign(userObj, process.env.JWT_SECRET)

@@ -268,6 +268,10 @@ $('#add-todo').submit(function(e){
             console.log(newTodo);
             $('#success').empty()
             $('#error').empty()
+            $('#add-title').val(''),
+            $('#add-description').val(''),
+            $('#add-status').val(''),
+            $('#add-due_date').val('')
 
             showTodos()
             $('#field-addTodo').hide()
@@ -281,43 +285,82 @@ $('#add-todo').submit(function(e){
         })
 })
     
-    
-    // EDIT TODO
-function updateTodo(id){
-    $('#edit-todo').submit(function(e){
-        e.preventDefault()
-    
-        let token = localStorage.token
-        let data = {
-            title: $('#edit-title').val(),
-            description: $('#edit-description').val(),
-            status: $('#edit-status').val(),
-            due_date: $('#edit-due_date').val()
-        }
-    
-        $.ajax({
-            url: `http://localhost:3000/todos/${id}`,
-            method: 'PUT',
-            data: data,
-            headers: {
-                token: token
-            },
-        })
-            .done(editedTodo => {
-                $('#success').empty()
-                $('#error').empty()
+// EDIT TODO
+$('#edit-todo').submit(function(e){
+    e.preventDefault()
 
-                showTodos()
-                $('#field-addTodo').hide()
-                $('#field-todos').show()
+    let token = localStorage.token
+    let data = {
+        title: $('#edit-title').val(),
+        description: $('#edit-description').val(),
+        status: $('#edit-status').val(),
+        due_date: $('#edit-due_date').val()
+    }
 
-                $('#success').append(`<div class="alert alert-success" role="alert"> Todo ${editedTodo.todo.title} berhasil dirubah </div>`)
-            })
-            .fail(err => {
-                $('#error').empty()
-                $('#error').append(`<div class="alert alert-danger" role="alert"> Data yang Anda isi Salah </div>`)
-            })
+    $.ajax({
+        url: `http://localhost:3000/todos/${id}`,
+        method: 'PUT',
+        data: data,
+        headers: {
+            token: token
+        },
     })
+        .done(editedTodo => {
+            $('#success').empty()
+            $('#error').empty()
+            $('#edit-title').val(''),
+            $('#edit-description').val(''),
+            $('#edit-status').val(''),
+            $('#edit-due_date').val('')
+
+            showTodos()
+            $('#field-addTodo').hide()
+            $('#field-todos').show()
+
+            $('#success').append(`<div class="alert alert-success" role="alert"> Todo ${editedTodo.todo.title} berhasil dirubah </div>`)
+        })
+        .fail(err => {
+            $('#error').empty()
+            $('#error').append(`<div class="alert alert-danger" role="alert"> Data yang Anda isi Salah </div>`)
+        })
+})
+
+// FORM EDIT TODO
+function updateTodo(id){
+    $('#field-addTodo').hide()
+    $('#field-editTodo').show()
+    $('#field-todos').hide()
+    $('#field-signup').hide()
+    $('#field-signin').hide()
+    $('#field-holiday').hide()
+
+    $ajax({
+        url: `http://localhost:3000/todos/${id}`,
+        method: 'GET',
+        headers: {
+            token: token
+        },
+    })
+        .done(todo => {
+            $('edit-title').append(`<input type="text" class="form-control" value="${todo.title}" placeholder="${todo.title}" name="title">`)
+            $('edit-description').append(`<textarea class="form-control" rows="4" value="${todo.description}" placeholder="${todo.description}" name="description"></textarea>`)
+            if (todo.status) {
+                $('edit-status').append(`<select class="form-control"  name="status">
+                                            <option value="false" selected>Undone</option>
+                                            <option value="true">Done</option>
+                                        </select>`)
+            } else {
+                $('edit-status').append(`<select class="form-control"  name="status">
+                                            <option value="false" selected>Undone</option>
+                                            <option value="true">Done</option>
+                                        </select>`)
+            }
+            $('edit-due_date').append(`<input type="date" class="form-control" value="${todo.due_date}" placeholder="${todo.due_date}" name="due_date">`)
+        })
+        .fail(err => {
+            $('#error').empty()
+            $('#error').append(`<div class="alert alert-danger" role="alert"> Gagal mendapatkan Todo dari Server </div>`)
+        })
 }
 
 
@@ -337,14 +380,15 @@ function deleteTodo(id){
             $('#success').empty()
             $('#error').empty()
 
-            showTodos()
+            showTodos() 
             $('#field-addTodo').hide()
             $('#field-todos').show()
 
             $('#success').append(`<div class="alert alert-success" role="alert"> Todo berhasil dihapus </div>`)
         })
         .fail(err => {
-            console.log(err);
+            $('#error').empty()
+            $('#error').append(`<div class="alert alert-danger" role="alert"> Gagal menghapus Todo </div>`)
         })
 }
 
@@ -378,6 +422,8 @@ function showHoliday(){
     })
 }
 
+
+// SIGNIN GOOGLE
 function onSignIn(googleUser) {
 
     var id_token = googleUser.getAuthResponse().id_token;
@@ -416,25 +462,30 @@ function onSignIn(googleUser) {
 }
 
 
+// SIGN OUT 
 function signOut() {
+    
     var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut().then(function() {
-        console.log('User signed out.');
+    if (auth2) {
+        auth2.signOut().then(function() {
+            console.log('User signed out.');
+        });
+    }
 
-        $('#success').empty()
+    $('#success').empty()
 
-        localStorage.removeItem('token')
-        $('#nav-signin').show()
-        $('#nav-signup').show()
-        $('#nav-todos').hide()
-        $('#nav-holiday').hide()
-        $('#nav-signout').hide()
-        $('#field-signin').show()
-        $('#field-todos').hide()
-        $('#field-addTodo').hide()
-        $('#field-editTodo').hide()
-        $('#field-holiday').hide()
+    localStorage.removeItem('token')
+    localStorage.clear()
+    $('#nav-signin').show()
+    $('#nav-signup').show()
+    $('#nav-todos').hide()
+    $('#nav-holiday').hide()
+    $('#nav-signout').hide()
+    $('#field-signin').show()
+    $('#field-todos').hide()
+    $('#field-addTodo').hide()
+    $('#field-editTodo').hide()
+    $('#field-holiday').hide()
 
-        $('#success').append(`<div class="alert alert-success" role="alert"> Anda berhasil Sign Out</div>`)
-    });
+    $('#success').append(`<div class="alert alert-success" role="alert"> Anda berhasil Sign Out</div>`)
 }
